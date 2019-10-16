@@ -12,6 +12,7 @@ from skimage.viewer.utils import dialogs
 from skimage.util import img_as_ubyte
 import os
 from matplotlib import colors
+import rasterio
 
 class SuperPixelPlugin(Plugin):
     """Canny filter plugin to show edges of an image."""
@@ -212,11 +213,13 @@ class DirectoryViewer(CollectionViewer):
         self.images = [os.path.join(self.src_dir, f) for f in glob.glob1(src_dir, '*{}'.format(type))]
         self.type = type
         self.ix = 0
-        first_image = io.imread(self.images[self.ix])
+        first_image, first_meta = self._read_image(self.images[self.ix])
         super(DirectoryViewer, self).__init__(first_image)
-        # TODO: useblit must be False for my mac but not my big monitors...wtf is blit?
+        self.current_image = first_image
+        self.current_meta = first_meta
+        # useblit should always be true but it can make things squirrelly on my mac monitor
         self.useblit = useblit
-        self.update_image(first_image)
+        self.update_image(self.current_image)
 
         self.previous = widgets.Button('Previous Image', callback=self.rewind)
         self.next = widgets.Button('Next Image', self.advance)
@@ -226,6 +229,18 @@ class DirectoryViewer(CollectionViewer):
         self.slider.setParent(None)
 
         self.resize(*size)
+
+    def _read_image(self, path):
+
+        with rasterio.open(path, 'r') as f:
+            current_image = np.moveaxis(f.read(), 0, 2)
+            current_meta = f.meta.copy()
+
+        return current_image, current_meta
+
+    def read_image(self, path):
+
+        self.current_image, self.current_meta = self._read_image(path)
 
     def reload_mask(self):
 
@@ -240,24 +255,31 @@ class DirectoryViewer(CollectionViewer):
     def rewind(self):
 
         self.ix = np.maximum(0, self.ix-1)
-        image = io.imread(self.images[self.ix])
-        self.update_image(image)
+        self.read_image(self.images[self.ix])
+        self.update_image(self.current_image)
         self.reload_mask()
 
     def advance(self):
 
         self.save_mask()
         self.ix = np.minimum(len(self.images), self.ix + 1)
-        image = io.imread(self.images[self.ix])
-        self.update_image(image)
+        self.read_image(self.images[self.ix])
+        self.update_image(self.current_image)
         self.reload_mask()
 
     def save_mask(self):
 
         mask = self._tools[0].overlay.astype(bool)
-        mask = img_as_ubyte(mask)
+        mask = img_as_ubyte(mask).reshape(1, mask.shape[0], mask.shape[1])
         out_name = os.path.join(self.dest_dir, os.path.basename(self.images[self.ix]).replace(self.type, '.png'))
-        io.imsave(out_name, mask)
+        mask_meta = self.current_meta.copy()
+        mask_meta['dtype'] = rasterio.uint8
+        mask_meta['count'] = 1
+        mask_meta['driver'] = 'PNG'
+        print(mask_meta)
+        with rasterio.open(out_name, 'w', **mask_meta) as f:
+            f.write(mask)
+
 
     def keyPressEvent(self, event):
         if type(event) == QtGui.QKeyEvent:
