@@ -25,6 +25,13 @@ However, the tool can also be run with a global thresholding approch (`--mode gl
 
 
 ------------
+## TODOS:
+-[] r/w from rasterio instead of skimage
+-[] refactor to make code simpler, add docs
+-[] add box selector feature?
+-[] r/w from S3 directories as well as local dirs
+
+------------
 ## Installation
 
 ### Development

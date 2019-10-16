@@ -12,24 +12,6 @@ from skimage.viewer.utils import dialogs
 from skimage.util import img_as_ubyte
 import os
 
-################################################################################################
-# SIMPLE AND WORKS
-# def image_filter(image, n_segments, compactness, max_iter, sigma):
-#
-#     segs = segmentation.slic(image, n_segments=n_segments, compactness=compactness, max_iter=max_iter, sigma=sigma)
-#
-#     return segmentation.mark_boundaries(image, segs, mode='inner')
-
-# p = Plugin(image_filter=image_filter)
-# p.add_widget(widgets.Slider('n_segments', 2, 500, update_on='release', value_type='int'))
-# p.add_widget(widgets.Slider('compactness', 0, 10, update_on='release', value_type='float'))
-# p.add_widget(widgets.Slider('max_iter', 0, 10, update_on='release', value_type='int'))
-# p.add_widget(widgets.Slider('sigma', 0, 10, update_on='release', value_type='int'))
-# viewer += p
-# viewer.show()
-################################################################################################
-
-
 
 class SuperPixelPlugin(Plugin):
     """Canny filter plugin to show edges of an image."""
@@ -196,48 +178,6 @@ class RegionBrush(PaintTool):
         self.redraw()
 
 
-class SaveButtons(widgets.BaseWidget):
-    """Buttons to save image to io.stack or to a file."""
-
-    def __init__(self, name='Save to:', default_format='png'):
-        super(SaveButtons, self).__init__(name)
-
-        self.default_format = default_format
-
-        self.name_label = QtWidgets.QLabel()
-        self.name_label.setText(name)
-
-        self.save_file = QtWidgets.QPushButton('File')
-        self.save_file.clicked.connect(self.save_to_file)
-        self.save_file.setFocusPolicy(QtCore.Qt.NoFocus)
-
-        self.layout = QtWidgets.QHBoxLayout(self)
-        self.layout.addWidget(self.name_label)
-        self.layout.addWidget(self.save_file)
-
-    def save_to_file(self, filename=None):
-        if not filename:
-            filename = dialogs.save_file_dialog()
-        if not filename:
-            return
-        mask = self.plugin.image_viewer._tools[0].overlay.astype(bool)
-        mask = img_as_ubyte(mask)
-        io.imsave(filename, mask)
-
-
-#src_img = '/Users/mgleason/Documents/dg/projects/github/exmachina/data/crosswalks/test/yes/tile_189_8.jpeg'
-# img = io.imread(src_img)
-#
-# viewer = ImageViewer(img)
-#
-# save = SaveButtons()
-# p = SuperPixelPlugin() + save
-# viewer += p
-#
-# paint = RegionBrush(viewer, img.shape, 2, 0.2)
-#
-# viewer.show()
-
 class DirectoryViewer(CollectionViewer):
     """Viewer for displaying image collections.
     Select the displayed frame of the image collection using the slider or
@@ -325,27 +265,3 @@ class DirectoryViewer(CollectionViewer):
         else:
             event.ignore()
 
-
-src = '/Users/mgleason/Documents/dg/projects/github/exmachina/data/crosswalks/test/yes'
-dest = '/Users/mgleason/Downloads/tatertot_test/'
-
-# note: blitting is needed, but on mac monitor it does wonkiness unless the canvas size perfect
-# matches the image size. so keep width at 325 to avoid this.
-viewer = DirectoryViewer(src_dir=src, dest_dir=dest, useblit=True, size=(325, 800))
-
-
-p = SuperPixelPlugin()
-viewer += p
-
-paint = RegionBrush(viewer, (256, 256), 2, 0.2)
-
-viewer.show()
-
-
-# TODO:
-# push to github
-# switch to rasterio for IO
-# set up as CLI
-
-# add box selector feature
-# link to S3 directories with centralized management so no one else can do it??

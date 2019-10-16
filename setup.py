@@ -26,19 +26,12 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: MIT License',
         'Natural Language :: English',
-        "Programming Language :: Python :: 2",
-        'Programming Language :: Python :: 2.7',
-        'Programming Language :: Python :: 3',
-        'Programming Language :: Python :: 3.5',
         'Programming Language :: Python :: 3.6',
         'Programming Language :: Python :: 3.7',
     ],
     description="Prototype for a basic image annotation tool",
-    entry_points={
-        'console_scripts': [
-            'tator=tatortot.tator:main',
-        ],
-    },
+    entry_points='''[console_scripts]
+                    tator=tatortot.tator:main''',
     install_requires=requirements,
     license="MIT license",
     long_description=readme + '\n\n' + history,
@@ -49,7 +42,7 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    url='https://github.com/[Amjgleason/tatortot',
+    url='https://github.com/GeoBigData/tatortot',
     version='0.1.0',
     zip_safe=False,
 )
