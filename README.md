@@ -31,7 +31,7 @@ This utility provides a simple interface for performing image annotation, and sp
 
 ------------
 ## TODOS:
--[] r/w from rasterio instead of skimage
+-[x] r/w from rasterio instead of skimage
 -[] refactor to make code simpler, add docs
 -[] add box selector feature?
 -[] r/w from S3 directories as well as local dirs
