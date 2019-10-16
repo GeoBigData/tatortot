@@ -5,23 +5,22 @@ This package includes one CLI tool:
 
 **tator:**
 ```
-Usage: dipstick [OPTIONS] IMAGE OUT
+Usage: tator [OPTIONS] SRC DEST
 
 Options:
-  -b, --bbox TEXT  Bbox for subsetting the scene, provided as a comma-
-                   delimited string in EPGS:4326 coordinates. e.g.:
-                   xmin,ymin,xmax,ymax.Default: None.
-  -m, --mode TEXT  Mode for detecting water from the scene.Valid options are:
-                   'boot' (more robust to all scenes) and 'global' (better for
-                   bimodal scenes)Default: 'boot'
-  --help           Show this message and exit.
-```
-This tool will detect water from a Sentinel-1 scene. This can either be a tif (assumed to be orthorectified and calibrated) or a in image ID.
-In the latter case, the image will be accessed via RDA, and calibrated on the fly; however, it will not be orthorectified and therefore may be spatially inaccurate by up to 100s of meters.
-This latter mode is best for rapid testing/development purposes.
+  -w, --img_width INTEGER      Width of src images in pixels. Default is 256
+  -h, --img_height INTEGER     Height of src images in pixels. Default is 256
+  -W, --viewer_width INTEGER   Width of viewer in pixels. Default is 325
+  -H, --viewer_height INTEGER  Height of viewer in pixels. Default is 800
+  -f, --filetype TEXT          File format for src images (as file extension).
+                               Default is '.jpeg'
+  --help                       Show this message and exit.
 
-The default water detection mode is a bootstrapped thresholding approach that is generally robust to non-bimodal images (`--mode boot`)
-However, the tool can also be run with a global thresholding approch (`--mode global`), which may produce nicer results for bimodal images.
+
+Note: SRC and DEST should both be local directories. SRC should contain images to annotate, DEST will store results.
+```
+
+This utility provides a simple interface for performing image annotation, and specifically defining binary semantic segmentation.
 
 
 ------------
