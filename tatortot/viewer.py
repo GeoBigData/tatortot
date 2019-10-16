@@ -11,7 +11,7 @@ from skimage.viewer.qt import QtWidgets, QtCore, QtGui
 from skimage.viewer.utils import dialogs
 from skimage.util import img_as_ubyte
 import os
-
+from matplotlib import colors
 
 class SuperPixelPlugin(Plugin):
     """Canny filter plugin to show edges of an image."""
@@ -114,12 +114,18 @@ class RegionBrush(PaintTool):
 
     name = 'RegionBrush'
 
-    def __init__(self, manager, overlay_shape, radius=2, alpha=0.3,
+    def __init__(self, manager, overlay_shape, radius=2, alpha=0.2,
+                 tableau_color='pink',
                  on_move=None, on_release=None, on_enter=None,
                  rect_props=None):
+
+        self.tableau_color = tableau_color
+        self.hex_color = colors.TABLEAU_COLORS['tab:{}'.format(tableau_color)]
+        self.rgba_color = list(colors.to_rgba(self.hex_color))
+        self.rgba_color[3] = alpha
         self.colors = np.zeros((overlay_shape[0], overlay_shape[1], 4))
-        self.colors[:, :, 0] = 1
-        self.colors[:, :, 3] = alpha
+        for i in range(0,4):
+            self.colors[:, :, i] = self.rgba_color[i]
         super(RegionBrush, self).__init__(manager, overlay_shape, radius=radius, alpha=alpha,
                                           on_move=on_move, on_release=on_release, on_enter=on_enter,
                                           rect_props=rect_props)

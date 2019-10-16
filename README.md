@@ -8,6 +8,11 @@ This package includes one CLI tool:
 Usage: tator [OPTIONS] SRC DEST
 
 Options:
+  -C, --overlay_color TEXT     Color to use for overlay. Valid options are: 'b
+                               lue','orange','green','red','purple','brown','p
+                               ink','gray','olive','cyan'.Defualt: 'cyan'.
+  -A, --overlay_alpha FLOAT    Transparency to use for overlay provided as
+                               alpha value (0-1).Default: 0.3.
   -w, --img_width INTEGER      Width of src images in pixels. Default is 256
   -h, --img_height INTEGER     Height of src images in pixels. Default is 256
   -W, --viewer_width INTEGER   Width of viewer in pixels. Default is 325
@@ -15,6 +20,7 @@ Options:
   -f, --filetype TEXT          File format for src images (as file extension).
                                Default is '.jpeg'
   --help                       Show this message and exit.
+
 
 
 Note: SRC and DEST should both be local directories. SRC should contain images to annotate, DEST will store results.
