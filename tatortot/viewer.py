@@ -65,7 +65,7 @@ class SuperPixelPlugin(Plugin):
             self.remove_widget(w)
 
         if self.methods[value] == 'SLIC':
-            self.add_widget(widgets.Slider('n_segments', 2, 500, value=150, update_on='release', value_type='int'))
+            self.add_widget(widgets.Slider('n_segments', 2, 2000, value=150, update_on='release', value_type='int'))
             self.add_widget(widgets.Slider('compactness', 0, 10, value=8.75, update_on='release', value_type='float'))
             self.add_widget(widgets.Slider('max_iter', 0, 10, value=10, update_on='release', value_type='int'))
             self.add_widget(widgets.Slider('sigma', 0, 10, value=1, update_on='release', value_type='int'))
